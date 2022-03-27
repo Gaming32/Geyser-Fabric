@@ -26,6 +26,8 @@
 package org.geysermc.platform.fabric;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.rtm516.mcxboxbroadcast.bootstrap.geyser.MCXboxBroadcastExtension;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -70,6 +72,8 @@ public class GeyserFabricMod implements ModInitializer, GeyserBootstrap {
     private ModContainer mod;
     private Path dataFolder;
     private MinecraftServer server;
+
+    private MCXboxBroadcastExtension broadcastExtension;
 
     /**
      * Commands that don't require any permission level to ran
@@ -168,6 +172,9 @@ public class GeyserFabricMod implements ModInitializer, GeyserBootstrap {
         geyserConfig.loadFloodgate(this, floodgate.orElse(null));
 
         this.connector = GeyserImpl.start(PlatformType.FABRIC, this);
+
+        broadcastExtension = new MCXboxBroadcastExtension(connector, dataFolder.resolve("mcxbox-broadcast"));
+        broadcastExtension.onPostInitialize();
 
         this.geyserPingPassthrough = GeyserLegacyPingPassthrough.init(connector);
 
